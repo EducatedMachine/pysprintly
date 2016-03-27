@@ -107,6 +107,15 @@ class Connection:
             return False, "Error returning value, incorrect JSON format"
 
     def build_url(self, URL, fields=""):
+        """
+        You pass this function the different paratmeters for it to build the correct
+        url you that needs to be queried in API
+
+        :param URL: (string) Key for the list of available URL templates in self.url
+        :param fields: (array) The array of items that need to added to form a proper url
+        :return: (string) A completely formatted url for querying the API
+        """
+
         url = self.URLS["BASE_API_ENDPOINT"] + self.URLS[URL].format(*fields)
         print(url)
         return url
@@ -118,5 +127,6 @@ class Connection:
 if __name__ == "__main__":
     import config as c
     conn = Connection(c.username, c.api_key, cache_values=True)
-    print(conn.products.delete_product(["40054",]))
+    print(conn.products.get_product(["40075",]))
+    print(conn.products.all_products)
 
