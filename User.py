@@ -4,6 +4,7 @@ class User:
         self.conn = connection
         self.user = ""
         self.cache_values = cache_values
+        self.cached = False
 
     @property
     def user_id(self):
@@ -27,7 +28,7 @@ class User:
 
     @property
     def user_details(self):
-        return self.user or self.conn.fetch("USER")
+        return self.user or self.conn.get("USER")
 
     def get_field(self, field_name):
         if self.cache_values:
@@ -40,6 +41,10 @@ class User:
 
         try:
             value = r[1]
+            if self.cache_values and not self.cached:
+                self.user = r
+                self.cached = True
             return value[field_name]
+
         except KeyError:
             return "Key error could not find {}".format(field_name)
