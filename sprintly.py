@@ -1,9 +1,8 @@
 import requests
 import json
 import products
+import user
 from requests.auth import HTTPBasicAuth
-
-
 
 #   =====================================
 #
@@ -54,6 +53,7 @@ class Connection:
         self.cache_values = cache_values
         self.user = ""
         self.products = products.Products(self)
+        self.user = user.User(self)
 
     def get(self, URL):
         endpoint = self.build_url(URL)

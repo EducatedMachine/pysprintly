@@ -31,9 +31,9 @@ class User:
 
     def get_field(self, field_name):
         if self.cache_values:
-            r = self.user or self.conn.fetch("USER")
+            r = self.user or self.conn.get("USER")
         else:
-            r = self.conn.fetch("USER")
+            r = self.conn.get("USER")
 
         if not r[0]:
             return r[1]
