@@ -7,7 +7,7 @@ class Products:
         self.sprintly = sprintly
 
     @property
-    def products(self):
+    def all_products(self):
         endpoint = self.sprintly.URLS["BASE"] + "products.json"
         r = requests.get(endpoint, auth=self.sprintly.auth)
         try:
@@ -24,4 +24,13 @@ class Products:
             return True, value
         except TypeError:
             return False, "Error returning value, incorrect JSON format"
+
+    def get_product(self, product_id):
+        pass
+
+    def update_product(self):
+        pass
+
+    def delete_product(self):
+        pass
 
