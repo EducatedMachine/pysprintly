@@ -1,8 +1,9 @@
-import requests
 import json
-import products
-import user
+import requests
 from requests.auth import HTTPBasicAuth
+
+from api import user
+from api import products
 
 #   =====================================
 #
