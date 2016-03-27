@@ -22,7 +22,7 @@ URLS = {
 }
 
 
-class Sprintly:
+class Connection:
     def __init__(self, email, api_key, cache_values=True):
         self.email = email
         self.api_key = api_key
