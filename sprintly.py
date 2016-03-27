@@ -56,7 +56,7 @@ class Connection:
         self.products = products.Products(self)
 
     def get(self, URL):
-        endpoint = self.URLS[URL]
+        endpoint = self.build_url(URL)
         r = requests.get(endpoint, auth=self.auth)
         try:
             value = json.loads(r.text)
@@ -72,7 +72,7 @@ class Connection:
         pass
 
     def build_url(self, URL, fields):
-        return self.URLS[URL]
+        return self.URLS["BASE_API_ENDPOINT"] + self.URLS[URL]
 
     @property
     def username(self):
