@@ -3,6 +3,6 @@ python:
   - "3.4"
 install:
   # Build/test dependencies
-  - pip3 install requests
+  - pip install requests
 script:
   - pytest
