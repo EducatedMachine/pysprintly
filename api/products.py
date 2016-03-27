@@ -1,31 +1,16 @@
-def cache(operator):
-
-    def inner_function(*args, **kwargs):
-        print("Before")
-        value = operator(*args, **kwargs)
-        print("After")
-        return value
-
-    return inner_function
-
+from utils import cache
+from models.product import Product
 
 class Products:
-    def __init__(self, connection, cache_values=True):
+    def __init__(self, connection, is_caching=True):
         self.conn = connection
-        self.cache_values = cache_values
-        self.products = {}
+        self.is_caching = is_caching
+        self._cached_values = []
 
     @property
     @cache
     def all_products(self):
-        if self.products:
-            return self.products
-
         status, value = self.conn.get("PRODUCTS")
-
-        if status and self.cache_values:
-            self.products = value
-
         return value
 
     def create_product(self, product_name):
@@ -40,6 +25,19 @@ class Products:
 
     def delete_product(self, product_id):
         return self.conn.delete("PRODUCT", fields=product_id)
+
+    @property
+    def cached_values(self):
+        return self._cached_values
+
+    @cached_values.setter
+    def cached_values(self, raw_value):
+        print("Setting")
+        if type(raw_value) == list:
+            for value in raw_value:
+                self._cached_values.append(Product(value))
+        elif type(raw_value) == dict:
+            self._cached_values.append(Product(raw_value))
 
 
 """

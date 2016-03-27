@@ -127,6 +127,11 @@ class Connection:
 if __name__ == "__main__":
     import config as c
     conn = Connection(c.username, c.api_key, cache_values=True)
-    print(conn.products.get_product(["40075",]))
     print(conn.products.all_products)
+    print("===============================")
+    items = conn.products.all_products
+
+    for item in items:
+        print(item.name)
+
 
