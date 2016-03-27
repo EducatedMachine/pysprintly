@@ -5,4 +5,4 @@ install:
   # Build/test dependencies
   - pip install --user -r requirements.txt
 script:
-  - pytest
+  - py.test
