@@ -1,29 +1,15 @@
-import requests
-import json
-
 class Products:
 
-    def __init__(self, sprintly):
-        self.sprintly = sprintly
+    def __init__(self, connection, cache_values=True):
+        self.conn = connection
+        self.cache_values = cache_values
 
     @property
     def all_products(self):
-        endpoint = self.sprintly.URLS["BASE"] + "products.json"
-        r = requests.get(endpoint, auth=self.sprintly.auth)
-        try:
-            value = json.loads(r.text)
-            return True, value
-        except TypeError:
-            return False, "Error returning value, incorrect JSON format"
+        return self.conn.get("PRODUCTS")
 
     def create_product(self, product_name):
-        endpoint = self.sprintly.URLS["BASE"] + "products.json"
-        r = requests.post(endpoint, data={"name": product_name}, auth=self.sprintly.auth)
-        try:
-            value = json.loads(r.text)
-            return True, value
-        except TypeError:
-            return False, "Error returning value, incorrect JSON format"
+        return self.conn.post("PRODUCTS", data={"name": product_name})
 
     def get_product(self, product_id):
         pass
