@@ -12,11 +12,11 @@ class Products:
         return self.conn.post("PRODUCTS", data={"name": product_name})
 
     def get_product(self, product_id):
-        pass
+        return self.conn.get("PRODUCT", fields=product_id)
 
     def update_product(self):
         pass
 
-    def delete_product(self):
-        pass
+    def delete_product(self, product_id):
+        return self.conn.delete("PRODUCT", fields=product_id)
 

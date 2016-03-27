@@ -13,37 +13,56 @@ from api import products
 #   =====================================
 
 URLS = {
-    "ATTACHMENTS": "products/{product_id}/items/{item_number}/attachments.json",
-    "ATTACHMENT": "products/{product_id}/items/{item_number}/attachments/{attachment_id}.json",
+    # Fields: product_id, item_number
+    "ATTACHMENTS": "products/{}/items/{}/attachments.json",
+    # Fields: product_id, item_number, attachment_id
+    "ATTACHMENT": "products/{}/items/{}/attachments/{}.json",
 
     "BASE_API_ENDPOINT": "https://sprint.ly/api/",
 
-    "BLOCKS": "products/{product_id}/items/{item_number}/blocking.json",
-    "BLOCK": "products/{product_id}/items/{item_number}/blocking/{block_id}.json",
+    # Fields: product_id, item_number
+    "BLOCKS": "products/{}/items/{}/blocking.json",
+    # Fields: product_id, item_number, block_id
+    "BLOCK": "products/{}/items/{}/blocking/{}.json",
 
-    "COMMENTS": "products/{product_id}/items/{item_number}/comments.json",
-    "COMMENT": "products/{product_id}/items/{item_number}/comments/{comment_id}.json",
+    # Fields: product_id, item_number
+    "COMMENTS": "products/{}/items/{}/comments.json",
+    # Fields: product_id, item_number, comment_id
+    "COMMENT": "products/{}/items/{}/comments/{}.json",
 
-    "DEPLOYS": "products/{product_id}/deploys.json",
+    # Fields: product_id
+    "DEPLOYS": "products/{}/deploys.json",
 
-    "FAVOURITES": "products/{product_id}/items/{item_number}/favorites.json",
-    "FAVOURITE": "products/{product_id}/items/{item_number}/favorites/{favorite_id}.json",
+    # Fields: product_id, item_number
+    "FAVOURITES": "products/{}/items/{}/favorites.json",
+    # Fields: product_id, item_number, favorite_id
+    "FAVOURITE": "products/{}/items/{item_number}/favorites/{}.json",
 
-    "ITEMS": "products/{product_id}/items.json",
-    "ITEM": "products/{product_id}/items/{item_number}.json",
-    "ITEM_CHILDREN": "products/{product_id}/items/{item_number}/children.json",
+    # Fields: product_id
+    "ITEMS": "products/{}/items.json",
+    # Fields: product_id, item_number
+    "ITEM": "products/{}/items/{}.json",
+    # Fields: product_id, item_number
+    "ITEM_CHILDREN": "products/{}/items/{}/children.json",
 
-    "PEOPLE": "products/{product_id}/people.json",
-    "PERSON": "products/{product_id}/people/{user_id}.json",
+    # Fields: product_id
+    "PEOPLE": "products/{}/people.json",
+    # Fields: product_id, user_id
+    "PERSON": "products/{}/people/{}.json",
 
-    "PRODUCTS": "products/",
-    "PRODUCT": "products/{product_id}.json",
+    "PRODUCTS": "products.json",
+    # Fields: product_id
+    "PRODUCT": "products/{}.json",
 
-    "PULL_REQUESTS": "products/{product_id}/pullrequests.json",
-    "PULL_REQUEST": "products/{product_id}/pullrequests/{pull_request_number}.json",
+    # Fields: product_id
+    "PULL_REQUESTS": "products/{}/pullrequests.json",
+    # Fields: product_id, pull_request_number
+    "PULL_REQUEST": "products/{}/pullrequests/{}.json",
 
-    "TAGS": "products/{product_id}/tags.json",
-    "TAG": "products/{product_id}/tags/{tag_name}.json",
+    # Fields: product_id
+    "TAGS": "products/{}/tags.json",
+    # Fields: product_id, tag_name
+    "TAG": "products/{}/tags/{tag_name}.json",
 
     "USER": "user/whoami.json",
 }
@@ -60,8 +79,8 @@ class Connection:
         self.products = products.Products(self, cache_values)
         self.user = user.User(self, cache_values)
 
-    def get(self, URL):
-        endpoint = self.build_url(URL)
+    def get(self, URL, fields=""):
+        endpoint = self.build_url(URL, fields)
         r = requests.get(endpoint, auth=self.auth)
         try:
             value = json.loads(r.text)
@@ -69,8 +88,8 @@ class Connection:
         except TypeError:
             return False, "Error returning value, incorrect JSON format"
 
-    def post(self, URL, data):
-        endpoint = self.build_url(URL)
+    def post(self, URL, data="", fields=""):
+        endpoint = self.build_url(URL, fields)
         r = requests.post(endpoint, data=data, auth=self.auth)
         try:
             value = json.loads(r.text)
@@ -78,11 +97,19 @@ class Connection:
         except TypeError:
             return False, "Error returning value, incorrect JSON format"
 
-    def delete(self, URL, data):
-        pass
+    def delete(self, URL, data="", fields=""):
+        endpoint = self.build_url(URL, fields)
+        r = requests.delete(endpoint, data=data, auth=self.auth)
+        try:
+            value = json.loads(r.text)
+            return True, value
+        except TypeError:
+            return False, "Error returning value, incorrect JSON format"
 
-    def build_url(self, URL):
-        return self.URLS["BASE_API_ENDPOINT"] + self.URLS[URL]
+    def build_url(self, URL, fields=""):
+        url = self.URLS["BASE_API_ENDPOINT"] + self.URLS[URL].format(*fields)
+        print(url)
+        return url
 
     @property
     def auth(self):
@@ -91,7 +118,5 @@ class Connection:
 if __name__ == "__main__":
     import config as c
     conn = Connection(c.username, c.api_key, cache_values=True)
-    print(conn.user.last_name)
-    print(conn.user.first_name)
-    print(conn.user.created_at)
+    print(conn.products.delete_product(["40054",]))
 
